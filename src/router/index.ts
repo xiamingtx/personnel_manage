@@ -4,7 +4,7 @@
  * @Author: 夏明
  * @Date: 2022-08-06 14:18:16
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-06 14:18:27
+ * @LastEditTime: 2022-08-06 16:29:39
  */
 import { createRouter, createWebHashHistory } from "vue-router";
 
@@ -23,6 +23,14 @@ const routes = [
     component: () => import("../views/Layout.vue"),
     redirect: "home",
     children: menuRoutes,
+  },
+  {
+    path: "/login",
+    component: () => import("../views/Auth/Login.vue")
+  },
+  {
+    path: "/register",
+    component: () => import("../views/Auth/Register.vue")
   },
   {
     path: "/403",
