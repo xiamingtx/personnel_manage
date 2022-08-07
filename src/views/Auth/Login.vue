@@ -4,7 +4,7 @@
  * @Author: 夏明
  * @Date: 2022-08-06 16:29:04
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-06 19:34:17
+ * @LastEditTime: 2022-08-07 21:49:44
 -->
 <template>
   <div class="login-form">
@@ -15,7 +15,7 @@
           <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
             <q-input
               filled
-              v-model="name"
+              v-model="userLoginRequest.username"
               label="请输入用户名"
               hint="用户名"
               lazy-rules
@@ -25,7 +25,7 @@
             <q-input
               filled
               type="password"
-              v-model="password"
+              v-model="userLoginRequest.password"
               label="请输入密码"
               hint="密码"
               lazy-rules
@@ -57,22 +57,29 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import { getToken } from "../../api/auth";
+import { ref, reactive } from "vue";
+import { login } from "../../api/auth";
+import { UserLoginRequest } from "../../types/auth";
+import { useRouter } from 'vue-router';
+import notify  from '../../utils/notify'
 
-const name = ref("");
-const password = ref("");
 const remember = ref(false);
+const userLoginRequest: UserLoginRequest = reactive({
+  username: "",
+  password: "",
+});
+const router = useRouter();
 
 const onSubmit = () => {
-  getToken(name.value, password.value).then((res) => {
+  login(userLoginRequest).then((res) => {
     console.log(res);
+    notify.success("登录成功");
+    router.push("/")
   });
 };
 
 const onReset = () => {
-  name.value = "";
-  password.value = "";
+  userLoginRequest.username = userLoginRequest.password = "";
   remember.value = false;
 };
 </script>

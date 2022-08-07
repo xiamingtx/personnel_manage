@@ -1,0 +1,54 @@
+/*
+ * @Description: Description of this file
+ * @Version: 2.0
+ * @Author: 夏明
+ * @Date: 2022-08-07 21:53:02
+ * @LastEditors: 夏明
+ * @LastEditTime: 2022-08-08 01:02:47
+ */
+import { defineStore } from 'pinia'
+import { Names } from './store-name'
+import { getToken, setToken, removeToken, setCurrentUser, getCurrentUser, removeCurrentUser } from '../utils/auth'
+import { login } from '../api/auth';
+import { UserLoginRequest } from '../types/auth';
+
+// useStore 可以是 useUser、useCart 之类的任何东西
+// 第一个参数是应用程序中 store 的唯一 id
+export const useDevStore = defineStore(Names.DEV, {
+  // other options...
+  state: () => {
+    return {
+      token: "",
+      currentUser: {
+        nickname: ""
+      }
+    }
+  },
+
+  // computed 修饰一些值
+  getters: {
+    // 取出nickname的第一个字符
+    nicknameFirstWord: state => {
+      if (!state.currentUser) return;
+      const nickname = state.currentUser.nickname;
+      return nickname ? nickname.slice(0, 1) : '';
+    }
+  },
+
+  // methods 可以做同步 异步的操作 提交state
+  actions: {
+    login(userLoginRequest:UserLoginRequest) {
+      return new Promise((resolve, reject) => {
+        login(userLoginRequest)
+          .then(res => {
+            console.log(res);
+            // 设置token
+            resolve(res);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    }
+  }
+})

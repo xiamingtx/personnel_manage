@@ -4,10 +4,17 @@
  * @Author: 夏明
  * @Date: 2022-08-06 17:24:29
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-06 18:34:23
+ * @LastEditTime: 2022-08-07 21:38:36
  */
 import { post } from './request'
+import { UserLoginRequest, UserCreateRequest } from '../types/auth'
 
 const prefix:string = "/auth";
 
-export const getToken = (username: string, password: string) => post( prefix + "/token", { username, password});
+export const login = (userLoginRequest:UserLoginRequest) => post( prefix + "/login", userLoginRequest);
+
+export const getCode = (mail:string) => post(`${prefix} + '/code?mail=' + ${mail}`)
+
+export const register = (userCreateRequest:UserCreateRequest) => post(prefix + "/register", { userCreateRequest})
+
+export const logout = () => post(prefix + "/logout");
