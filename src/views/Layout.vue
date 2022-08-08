@@ -4,7 +4,7 @@
  * @Author: 夏明
  * @Date: 2022-08-06 12:43:21
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-06 12:49:31
+ * @LastEditTime: 2022-08-08 11:50:56
 -->
 <template>
   <q-layout view="hHh lpR fFf">
@@ -12,12 +12,18 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
-          Title
-        </q-toolbar-title>
+        <q-toolbar-title> 人员管理系统 </q-toolbar-title>
+        <q-space />
+        <q-avatar color="teal" text-color="white">
+          {{ store.nicknameFirstWord }}
+          <q-menu fit>
+            <q-list style="min-width: 100px">
+              <q-item clickable v-close-popup @click="logout">
+                <q-item-section>退出</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-avatar>
       </q-toolbar>
     </q-header>
 
@@ -33,12 +39,21 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
+import { useDevStore } from "../store/index";
+import { useRouter  } from "vue-router";
 
 const leftDrawerOpen = ref(false);
+const store = useDevStore();
 
-const toggleLeftDrawer = ():void => {
+const toggleLeftDrawer = (): void => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 };
+
+const logout = () => {
+  store.logout().then(() => {
+    window.location.reload();
+  })
+}
 </script>
 
 <style scoped lang="scss"></style>

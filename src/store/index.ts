@@ -4,12 +4,12 @@
  * @Author: 夏明
  * @Date: 2022-08-07 21:53:02
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-08 01:02:47
+ * @LastEditTime: 2022-08-08 11:55:04
  */
 import { defineStore } from 'pinia'
 import { Names } from './store-name'
 import { getToken, setToken, removeToken, setCurrentUser, getCurrentUser, removeCurrentUser } from '../utils/auth'
-import { login } from '../api/auth';
+import { login, fetchCurrentUser, logout } from '../api/auth';
 import { UserLoginRequest } from '../types/auth';
 
 // useStore 可以是 useUser、useCart 之类的任何东西
@@ -18,10 +18,8 @@ export const useDevStore = defineStore(Names.DEV, {
   // other options...
   state: () => {
     return {
-      token: "",
-      currentUser: {
-        nickname: ""
-      }
+      token: getToken(),
+      currentUser: getCurrentUser()
     }
   },
 
@@ -41,14 +39,50 @@ export const useDevStore = defineStore(Names.DEV, {
       return new Promise((resolve, reject) => {
         login(userLoginRequest)
           .then(res => {
-            console.log(res);
+            const token:string = res.data.token;
             // 设置token
+            this.token = token;
+            // 存储到localStorage
+            setToken(token);
             resolve(res);
           })
           .catch(error => {
             reject(error);
           });
       });
+    },
+    me() {
+      return new Promise((resolve, reject) => {
+        fetchCurrentUser().then(res => {
+          const currentUser = res.data;
+          // 设置到store中
+          this.currentUser = currentUser;
+          // 设置到localStorage
+          setCurrentUser(currentUser);
+          resolve(res);
+        })
+        .catch(error => {
+          reject(error);
+        });
+      });
+    },
+    logout() {
+      return new Promise((resolve, reject) => {
+        logout().then(res => {
+          console.log(res);
+          this.token = "";
+          this.currentUser = {
+            nickname: "",
+            roles: []
+          }
+          removeToken();
+          removeCurrentUser();
+          resolve(res)
+        })
+        .catch(error => {
+          reject(error);
+        })
+      })
     }
   }
 })

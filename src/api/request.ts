@@ -4,11 +4,11 @@
  * @Author: 夏明
  * @Date: 2022-08-06 17:11:04
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-07 21:47:49
+ * @LastEditTime: 2022-08-08 10:50:24
  */
 import axios from "axios";
-import { Notify } from "quasar";
 import notify from "../utils/notify";
+import { useDevStore } from '../store/index'
 
 const baseURL = import.meta.env.VITE_API_HOST;
 
@@ -18,7 +18,16 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    // do something before request is sent
+    const whitelist = ['/auth/login', '/auth/register']
+    // 白名单不携带token
+    if (config.url && whitelist.includes(config.url)) {
+      return config;
+    }
+    const store = useDevStore();
+
+    if (store.token) {
+      config!.headers!['token'] = store.token
+    }
     return config;
   },
   (error) => {

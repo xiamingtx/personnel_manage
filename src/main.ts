@@ -4,7 +4,7 @@
  * @Author: 夏明
  * @Date: 2022-08-06 12:07:59
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-07 21:52:06
+ * @LastEditTime: 2022-08-08 11:35:24
  */
 import { createApp } from 'vue'
 import { Quasar, Notify } from 'quasar'
@@ -15,6 +15,7 @@ import '@quasar/extras/material-icons/material-icons.css'
 import 'quasar/src/css/index.sass'
 // 引入pinia
 import { createPinia } from 'pinia'
+import './utils/permission'
 import router from './router'
 import App from './App.vue'
 
@@ -28,10 +29,9 @@ myApp.use(Quasar, {
     notify: { /* look at QuasarConfOptions from the API card */ }
   }
 })
+myApp.use(createPinia())
 
 myApp.use(router)
-
-myApp.use(createPinia())
 
 // Assumes you have a <div id="app"></div> in your index.html
 myApp.mount('#app')

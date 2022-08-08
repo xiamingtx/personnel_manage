@@ -4,7 +4,7 @@
  * @Author: 夏明
  * @Date: 2022-08-06 16:29:04
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-07 21:49:44
+ * @LastEditTime: 2022-08-08 11:45:04
 -->
 <template>
   <div class="login-form">
@@ -60,8 +60,9 @@
 import { ref, reactive } from "vue";
 import { login } from "../../api/auth";
 import { UserLoginRequest } from "../../types/auth";
-import { useRouter } from 'vue-router';
-import notify  from '../../utils/notify'
+import { useRouter } from "vue-router";
+import notify from "../../utils/notify";
+import { useDevStore } from "../../store/index";
 
 const remember = ref(false);
 const userLoginRequest: UserLoginRequest = reactive({
@@ -69,12 +70,14 @@ const userLoginRequest: UserLoginRequest = reactive({
   password: "",
 });
 const router = useRouter();
+const store = useDevStore();
 
 const onSubmit = () => {
-  login(userLoginRequest).then((res) => {
-    console.log(res);
+  store.login(userLoginRequest).then((res) => {
     notify.success("登录成功");
-    router.push("/")
+    store.me().then(() => {
+      router.push("/");
+    });
   });
 };
 
