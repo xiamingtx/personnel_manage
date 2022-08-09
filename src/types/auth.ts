@@ -4,9 +4,9 @@
  * @Author: 夏明
  * @Date: 2022-08-07 21:38:26
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-07 21:38:40
+ * @LastEditTime: 2022-08-09 11:01:18
  */
-export interface UserCreateRequest{
+export interface UserRegisterRequest{
   username: string, 
   password:string,
   mail: string,

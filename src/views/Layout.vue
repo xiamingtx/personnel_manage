@@ -4,7 +4,7 @@
  * @Author: 夏明
  * @Date: 2022-08-06 12:43:21
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-08 11:50:56
+ * @LastEditTime: 2022-08-09 00:02:56
 -->
 <template>
   <q-layout view="hHh lpR fFf">
@@ -28,7 +28,23 @@
     </q-header>
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
-      <!-- drawer content -->
+      <q-list padding class="text-primary">
+        <q-item
+          clickable
+          v-ripple
+          active-class="menu-active"
+          v-for="item in menuRoutes"
+          :key="item.meta.title"
+          :active="item.name === route.name"
+          :to="item.path"
+        >
+          <q-item-section avatar>
+            <q-icon :name="item.meta.icon" />
+          </q-item-section>
+
+          <q-item-section>{{ item.meta.title }}</q-item-section>
+        </q-item>
+      </q-list>
     </q-drawer>
 
     <q-page-container>
@@ -40,10 +56,12 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useDevStore } from "../store/index";
-import { useRouter  } from "vue-router";
+import { useRoute } from "vue-router";
+import { menuRoutes } from "../router";
 
 const leftDrawerOpen = ref(false);
 const store = useDevStore();
+const route = useRoute();
 
 const toggleLeftDrawer = (): void => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -52,8 +70,13 @@ const toggleLeftDrawer = (): void => {
 const logout = () => {
   store.logout().then(() => {
     window.location.reload();
-  })
-}
+  });
+};
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.menu-active{
+  color: white;
+  background: #F2C037;
+}
+</style>
