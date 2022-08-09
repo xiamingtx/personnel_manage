@@ -4,7 +4,7 @@
  * @Author: 夏明
  * @Date: 2022-08-06 17:11:04
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-08 10:50:24
+ * @LastEditTime: 2022-08-09 17:42:12
  */
 import axios from "axios";
 import notify from "../utils/notify";
@@ -55,6 +55,4 @@ const handleErrorResponse = (response:any) => {
   notify.error(response.message);
 };
 
-const { get, post, put, delete:Delete } = instance;
-
-export { get, post, put, Delete };
+export default instance;

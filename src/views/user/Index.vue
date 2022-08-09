@@ -45,12 +45,13 @@
           <q-td :props="props">
             <q-btn-group>
               <q-btn color="primary" icon="build" label="修改" />
-              <q-btn color="deep-orange" icon="delete" label="删除" />
+              <q-btn color="deep-orange" icon="delete" label="删除" @click="onDelete(props.row.id)" />
             </q-btn-group>
           </q-td>
         </template>
       </q-table>
     </div>
+    <Confirm ref="confirm" title="请问您确认要删除吗?" @on-confirm="deleteUser" />
   </div>
 </template>
 
@@ -58,7 +59,9 @@
 // @ts-nocheck
 import { ref, onMounted } from "vue";
 import { exportFile, useQuasar } from "quasar";
-import { list } from "../../api/user";
+import { list, removeUser } from "../../api/user";
+import notify from '../../utils/notify';
+import Confirm from '../../components/dialog/Confirm.vue'
 
 const columns = [
   {
@@ -129,6 +132,10 @@ const $q = useQuasar();
 
 const filter = ref("");
 
+const confirm = ref();
+
+const selectedId = ref("");
+
 const fetchData = () => {
   list().then((res) => {
     res.data.forEach((item) => {
@@ -154,6 +161,23 @@ const fetchData = () => {
     rows.value = res.data;
   });
 };
+
+const deleteUser = () => {
+  removeUser(selectedId.value).then(() => {
+    notify.success("删除成功!");
+    fetchData();
+  })
+}
+
+const onDelete = (id) => {
+  selectedId.value = id;
+  toggleConfirm()
+}
+
+const toggleConfirm = () => {
+  // 获取子组件的方法
+  confirm.value.toggle();
+} 
 
 onMounted(fetchData);
 
