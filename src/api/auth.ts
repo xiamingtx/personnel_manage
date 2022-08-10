@@ -4,7 +4,7 @@
  * @Author: 夏明
  * @Date: 2022-08-06 17:24:29
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-09 17:42:29
+ * @LastEditTime: 2022-08-10 21:26:43
  */
 /*
  * @Description: Description of this file
@@ -21,7 +21,7 @@ const prefix:string = "/auth";
 
 export const login = (userLoginRequest:UserLoginRequest) => request.post( prefix + "/login", userLoginRequest);
 
-export const getCode = (mail:string) => request.post(`${prefix} + '/code?mail=' + ${mail}`)
+export const getCode = (mail:string) => request.post(`/publish/mail_code?mail=${mail}`)
 
 export const register = (userRegisterRequest:UserRegisterRequest) => request.post(prefix + "/register", { userRegisterRequest})
 

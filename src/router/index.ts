@@ -4,7 +4,7 @@
  * @Author: 夏明
  * @Date: 2022-08-06 14:18:16
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-09 10:51:42
+ * @LastEditTime: 2022-08-10 22:12:20
  */
 import { createRouter, createWebHashHistory } from "vue-router";
 
@@ -19,7 +19,7 @@ export const menuRoutes = [
     path: 'user',
     name: 'User',
     meta: { title: '用户管理', icon: 'manage_accounts' },
-    component: () => import('../views/user/Index.vue')
+    component: () => import('../views/user/Index.vue'),
   },
 ];
 

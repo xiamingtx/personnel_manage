@@ -4,7 +4,7 @@
  * @Author: 夏明
  * @Date: 2022-08-09 18:08:41
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-09 19:33:36
+ * @LastEditTime: 2022-08-10 22:34:14
 -->
 <template>
   <q-dialog v-model="confirm" persistent>
@@ -39,15 +39,15 @@ const emits = defineEmits(["onConfirm"]);
 
 const confirm = ref<boolean>(false);
 
-const toggle = () => {
+const toggleConfirm = () => {
   confirm.value = !confirm.value;
 };
 
 const onConfirm = () => {
   emits("onConfirm");
-}
+};
 //将方法暴露出
-defineExpose({ toggle });
+defineExpose({ toggleConfirm });
 </script>
 
 <style lang=""></style>

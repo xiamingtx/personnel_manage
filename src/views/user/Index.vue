@@ -1,9 +1,14 @@
 <template>
   <div class="page">
     <section class="page-header">
-      <section class="page-header-title">用户列表</section>
-      <section class="page-header-icon">
-        <q-icon name="view_list"></q-icon>
+      <section class="page-header-list">
+        <section class="page-header-title">用户列表</section>
+        <section class="page-header-icon">
+          <q-icon name="view_list"></q-icon>
+        </section>
+      </section>
+      <section class="q-pa-md q-gutter-sm page-header-btn">
+        <q-btn color="primary" label="添加用户" @click="onAdd" />
       </section>
     </section>
     <div class="q-pa-md">
@@ -35,7 +40,7 @@
           <q-btn
             color="primary"
             icon-right="archive"
-            label="Export to csv"
+            label="导出表格"
             no-caps
             @click="exportTable"
           />
@@ -45,13 +50,24 @@
           <q-td :props="props">
             <q-btn-group>
               <q-btn color="primary" icon="build" label="修改" />
-              <q-btn color="deep-orange" icon="delete" label="删除" @click="onDelete(props.row.id)" />
+              <q-btn
+                color="deep-orange"
+                icon="delete"
+                label="删除"
+                @click="onDelete(props.row.id)"
+              />
             </q-btn-group>
           </q-td>
         </template>
       </q-table>
     </div>
-    <Confirm ref="confirm" title="请问您确认要删除吗?" @on-confirm="deleteUser" />
+    <Confirm
+      ref="confirm"
+      title="请问您确认要删除吗?"
+      @on-confirm="deleteUser"
+    />
+
+    <CreateDialog ref="createDialog" @create-success="fetchData" />
   </div>
 </template>
 
@@ -60,8 +76,9 @@
 import { ref, onMounted } from "vue";
 import { exportFile, useQuasar } from "quasar";
 import { list, removeUser } from "../../api/user";
-import notify from '../../utils/notify';
-import Confirm from '../../components/dialog/Confirm.vue'
+import notify from "../../utils/notify";
+import Confirm from "../../components/dialog/Confirm.vue";
+import CreateDialog from "./CreateDialog.vue";
 
 const columns = [
   {
@@ -132,9 +149,15 @@ const $q = useQuasar();
 
 const filter = ref("");
 
-const confirm = ref();
+const confirm = ref(null);
 
 const selectedId = ref("");
+
+const createDialog = ref(null);
+
+const onAdd = () => {
+  createDialog.value.showCreateDialog();
+}
 
 const fetchData = () => {
   list().then((res) => {
@@ -166,18 +189,18 @@ const deleteUser = () => {
   removeUser(selectedId.value).then(() => {
     notify.success("删除成功!");
     fetchData();
-  })
-}
+  });
+};
 
 const onDelete = (id) => {
   selectedId.value = id;
-  toggleConfirm()
-}
+  toggleConfirm();
+};
 
 const toggleConfirm = () => {
   // 获取子组件的方法
-  confirm.value.toggle();
-} 
+  confirm.value.toggleConfirm();
+};
 
 onMounted(fetchData);
 
@@ -239,13 +262,21 @@ const exportTable = () => {
   .page-header {
     margin: 20px 0 0 20px;
     display: flex;
+    width: 100%;
     align-items: center;
-    .page-header-title {
-      font-size: 25px;
+    justify-content: space-between;
+    .page-header-list {
+      display: flex;
+      .page-header-title {
+        font-size: 25px;
+      }
+      .page-header-icon {
+        padding-left: 10px;
+        font-size: 25px;
+      }
     }
-    .page-header-icon {
-      padding-left: 10px;
-      font-size: 25px;
+    .page-header-btn {
+      margin-right: 50px;
     }
   }
 }
