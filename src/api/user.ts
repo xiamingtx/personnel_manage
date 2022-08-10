@@ -4,7 +4,7 @@
  * @Author: 夏明
  * @Date: 2022-08-09 11:00:45
  * @LastEditors: 夏明
- * @LastEditTime: 2022-08-10 22:27:29
+ * @LastEditTime: 2022-08-11 00:52:16
  */
 import request from './request'
 import { UserCreateRequest, UserUpdateRequest } from '../types/user'
@@ -19,4 +19,5 @@ export const getUser = (id:string) => request.get(`${prefix}/${id}`)
 
 export const addUser = (userCreateRequest:UserCreateRequest) => request.post(prefix, userCreateRequest)
 
-export const updateUser = (userUpdateRequest:UserUpdateRequest) => request.put(prefix, userUpdateRequest)
+export const updateUser = 
+(id:string,userUpdateRequest:UserUpdateRequest) => request.put(`${prefix}/${id}`, userUpdateRequest)

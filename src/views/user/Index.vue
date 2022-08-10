@@ -49,7 +49,12 @@
         <template v-slot:body-cell-operation="props">
           <q-td :props="props">
             <q-btn-group>
-              <q-btn color="primary" icon="build" label="修改" />
+              <q-btn
+                color="primary"
+                icon="build"
+                label="修改"
+                @click="onUpdate(props.row)"
+              />
               <q-btn
                 color="deep-orange"
                 icon="delete"
@@ -68,23 +73,27 @@
     />
 
     <CreateDialog ref="createDialog" @create-success="fetchData" />
+
+    <UpdateDialog ref="updateDialog" @update-success="fetchData" />
   </div>
 </template>
 
 <script setup lang="ts">
 // @ts-nocheck
-import { ref, onMounted } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import { exportFile, useQuasar } from "quasar";
 import { list, removeUser } from "../../api/user";
 import notify from "../../utils/notify";
 import Confirm from "../../components/dialog/Confirm.vue";
 import CreateDialog from "./CreateDialog.vue";
+import UpdateDialog from "./UpdateDialog.vue";
+import { UserUpdateRequest } from "../../types/user";
 
 const columns = [
   {
     name: "nickname",
     required: true,
-    label: "姓名",
+    label: "昵称",
     align: "left",
     field: (row: any) => row.nickname,
     format: (val: any) => `${val}`,
@@ -131,7 +140,7 @@ declare interface role {
   title: string;
 }
 
-declare interface user {
+declare interface User {
   id: string;
   username: string;
   nickname: string;
@@ -143,7 +152,7 @@ declare interface user {
 
 // 为什么这里quasar不会解reactive 只会解ref
 // let rows:user[] = reactive([])
-const rows: user[] = ref([]);
+const rows: User[] = ref([]);
 
 const $q = useQuasar();
 
@@ -155,9 +164,12 @@ const selectedId = ref("");
 
 const createDialog = ref(null);
 
-const onAdd = () => {
-  createDialog.value.showCreateDialog();
-}
+const updateDialog = ref(null);
+
+const userUpdateRequest: UserUpdateRequest = reactive({
+  nickname: "",
+  gender: "MALE",
+});
 
 const fetchData = () => {
   list().then((res) => {
@@ -174,15 +186,30 @@ const fetchData = () => {
         item.gender = "男";
       } else if (item.gender === "FEMALE") {
         item.gender = "女";
-      } else if (item.gender === "UNKNOWN") {
-        item.gender = "未知";
       } else {
-        console.log("数据错误");
+        item.gender = "未知";
       }
     });
 
     rows.value = res.data;
   });
+};
+
+const onAdd = () => {
+  createDialog.value.showCreateDialog();
+};
+
+const onUpdate = (user: User) => {
+  userUpdateRequest.nickname = user.nickname;
+  if (user.gender === "男") {
+    userUpdateRequest.gender = "MALE";
+  } else if (user.gender === "女") {
+    userUpdateRequest.gender = "FEMALE";
+  } else {
+    userUpdateRequest.gender = "UNKNOWN";
+  }
+  updateDialog.value.updateModel(user.id, userUpdateRequest);
+  updateDialog.value.showUpdateDialog();
 };
 
 const deleteUser = () => {
